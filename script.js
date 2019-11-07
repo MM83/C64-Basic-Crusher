@@ -3,6 +3,7 @@ let loadButton = document.getElementById("load-button");
 let saveButton = document.getElementById("save-button");
 let inputText = document.getElementById("input-text");
 let outputText = document.getElementById("output-text");
+let changedText = document.getElementById("changed-text");
 let outputMessage = document.getElementById("output-message");
 
 let keywords = {
@@ -56,6 +57,7 @@ let labelCount = 0;
 let varCount0 = 0;
 let varCount1 = 0;
 
+let prevLines = [];
 
 function getLabelMap(label)
 {
@@ -370,13 +372,14 @@ function compile()
   pushAndReset();
 
 
-  let finalString = "new\n";
 
   for(let i = 0; i < finalLines.length; ++i)
   {
     let line = finalLines[i];
     if(line.charAt(0) == ":")
       line = line.substr(1);
+    if(line.length == 0)
+      line = "rem";
 
     for(let j in labelLineMap)
     {
@@ -384,18 +387,60 @@ function compile()
         line = line.replace(j, labelLineMap[j]);
     }
 
-    finalLines[i] = line;
-    if(line.length == 0)
-      line = "rem";
+    finalLines[i] = i + line + "\n";
 
-    finalString += i + line + "\n";
   }
 
-  finalString += "run\n";
+  console.log("lines club", finalLines);
 
-  outputText.value = finalString;
-  outputText.select();
+  let totalString = "new\n";
+  let changedString = "";
+
+  for(let i = 0; i < finalLines.length; ++i)
+  {
+    totalString += finalLines[i];
+
+    if(finalLines[i] != prevLines[i])
+      changedString += finalLines[i];
+  }
+
+  totalString += "run\n";
+  changedString += "run\n";
+
+  prevLines = finalLines.concat();
+
+  outputText.value = totalString;
+  changedText.value = changedString;
+  changedText.select();
   document.execCommand("copy");
+
+  //
+  // let finalString = "new\n";
+  //
+  // for(let i = 0; i < finalLines.length; ++i)
+  // {
+  //   let line = finalLines[i];
+  //   if(line.charAt(0) == ":")
+  //     line = line.substr(1);
+  //
+  //   for(let j in labelLineMap)
+  //   {
+  //     while(line.indexOf(j) != -1)
+  //       line = line.replace(j, labelLineMap[j]);
+  //   }
+  //
+  //   finalLines[i] = line;
+  //   if(line.length == 0)
+  //     line = "rem";
+  //
+  //   finalString += i + line + "\n";
+  // }
+  //
+  // finalString += "run\n";
+  //
+  // outputText.value = finalString;
+  // outputText.select();
+  // document.execCommand("copy");
 
 
 }
