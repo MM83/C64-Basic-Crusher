@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>C64 Basic Crusher</title>
+    <style type="text/css" media="screen">
+        body, html {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          margin: 0;
+        }
+        h1 {
+          font-family: Helvetica, Arial;
+          color: #aaa;
+          text-align: center;
+          font-size: 1.25rem;
+        }
+        div {
+          display: flex;
+          box-sizing: border-box;
+        }
+        .main-container {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          background: black;
+        }
+        .column {
+          height: 100%;
+          flex-direction: column;
+          padding: 0.5rem;
+          flex-grow: 1;
+          flex-basis: 0;
+        }
+        .input-column {
+        }
+        .output-column {
+          /* width: 20rem; */
+        }
+        .input-ta {
+          resize: none;
+          flex-grow: 1;
+          background: #222;
+          border: none;
+          outline: none;
+          color: #aaa;
+          font-family: monospace;
+          font-size: 1rem;
+          box-sizing: border-box;
+          padding: 0.5rem;
+        }
+        .compile-button {
+          margin-top: 0.5rem;
+          /* height: 2rem; */
+          padding: 0.5rem;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+          background: #aaa;
+          color: #222;
+        }
+        .output-message {
+          background: black;
+          color: red;
+          width: 100%;
+          height: 10rem;
+          font-family: monospace;
+          font-size: 1.5rem;
+        }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="column input-column">
+        <h1>Input</h1>
+        <textarea spellcheck="false" id="input-text" class="input-ta">
+|SHITTO
+cls
+$varro = "tenno";
+%var = 10
+#var = 5440.02
+bgd black
+bor white
+@start
+print "i like suspects"
+goto @start
+
+
+        </textarea>
+        <button id="compile-button" class="compile-button">Compile</button>
+      </div>
+      <div class="column output-column">
+        <h1>Output</h1>
+        <textarea spellcheck="false" id="output-text" class="input-ta">
+
+        </textarea>
+        <div class="output-message" id="output-message"></div>
+      </div>
+    </div>
+    <script type="text/javascript" src="script.js">
+
+    </script>
+  </body>
+</html>
