@@ -1,4 +1,6 @@
 let compileButton = document.getElementById("compile-button");
+let loadButton = document.getElementById("load-button");
+let saveButton = document.getElementById("save-button");
 let inputText = document.getElementById("input-text");
 let outputText = document.getElementById("output-text");
 let outputMessage = document.getElementById("output-message");
@@ -89,7 +91,7 @@ function getVarMap(varLabel)
 
 function getCharType(char)
 {
-    if(char.match(/[a-zA-Z]/)){
+    if(char.match(/[a-zA-Z_]/)){
       return types.KEYWORD;
     }
     if(char.match(/[\$\%\#]/)){
@@ -224,7 +226,7 @@ function swallowToken()
 
 function compile()
 {
-  let inputValue = inputText.value;
+  let inputValue = inputText.value.replace(/[\t*]/g, "");
   let inputLines = inputValue.split("\n");
 
   let lineTokens = [];
@@ -360,11 +362,11 @@ function compile()
       pushAndReset();
       currentFinalLine += string;
     }
-
-    if(gotoLine)
-    {
-      pushAndReset();
-    }
+    //
+    // if(gotoLine)
+    // {
+    //   pushAndReset();
+    // }
 
   }
 
@@ -399,6 +401,19 @@ function compile()
 
 }
 
+//SET UP TAB
+var textareas = document.getElementsByTagName('textarea');
+var count = textareas.length;
+for(var i=0;i<count;i++){
+    textareas[i].onkeydown = function(e){
+        if(e.keyCode==9 || e.which==9){
+            e.preventDefault();
+            var s = this.selectionStart;
+            this.value = this.value.substring(0,this.selectionStart) + "\t" + this.value.substring(this.selectionEnd);
+            this.selectionEnd = s+1;
+        }
+    }
+}
 
 
 compileButton.addEventListener("click", compile);
@@ -410,4 +425,32 @@ window.addEventListener("keydown", (e)=>{
   }
 });
 
-compile();
+loadWarn = false;
+saveWarn = false;
+
+loadButton.addEventListener("click", function(){
+  if(loadWarn){
+    inputText.value = localStorage.getItem("code");
+  } else {
+    loadWarn = true;
+    loadButton.style.background = "#f00";
+    setTimeout(function(){
+      loadWarn = false;
+      loadButton.style.background = "#aaa";
+    }, 1000);
+  }
+});
+
+saveButton.addEventListener("click", function(){
+  if(saveWarn){
+    localStorage.setItem("code", inputText.value);
+  } else {
+    saveWarn = true;
+    saveButton.style.background = "#f00";
+    setTimeout(function(){
+      saveWarn = false;
+      saveButton.style.background = "#aaa";
+    }, 1000);
+  }
+
+});

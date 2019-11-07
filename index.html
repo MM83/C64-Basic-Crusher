@@ -51,14 +51,22 @@
           padding: 0.5rem;
         }
         .compile-button {
-          margin-top: 0.5rem;
-          /* height: 2rem; */
           padding: 0.5rem;
           font-size: 1rem;
           border: none;
           outline: none;
           background: #aaa;
           color: #222;
+          flex-grow: 1;
+        }
+        .load-save-button {
+          padding: 0.5rem;
+          font-size: 1rem;
+          border: none;
+          outline: none;
+          background: #aaa;
+          color: #222;
+          margin-left: 0.5rem;
         }
         .output-message {
           background: black;
@@ -68,6 +76,10 @@
           font-family: monospace;
           font-size: 1.5rem;
         }
+        .button-row {
+          margin-top: 0.5rem;
+        }
+
     </style>
   </head>
   <body>
@@ -80,16 +92,29 @@ bgd black
 bor black
 pen red
 %charVal = 70
+%charPos = 1024
+
 
 @startLoop
-poke 1024, %charVal
+poke %charPos, %charVal
+%charPos = %charPos + 1
+if %charPos > 1124 then goto @resetLoop
+goto @startLoop
+
+
+@resetLoop
 %charVal = %charVal + 1
-if %charVal > 10 then %charVal = 0
+%charPos = 1024
 goto @startLoop
 
 
         </textarea>
-        <button id="compile-button" class="compile-button">Compile</button>
+        <div class="button-row">
+          <button id="compile-button" class="compile-button">Compile</button>
+          <button id="load-button" class="load-save-button">Load</button>
+          <button id="save-button" class="load-save-button">Save</button>
+        </div>
+
       </div>
       <div class="column output-column">
         <h1>Output</h1>
