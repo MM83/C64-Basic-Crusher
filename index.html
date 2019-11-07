@@ -75,16 +75,17 @@
       <div class="column input-column">
         <h1>Input</h1>
         <textarea spellcheck="false" id="input-text" class="input-ta">
-|SHITTO
 cls
-$varro = "tenno"
-%var = 10
-#var = 5440.02
 bgd black
-bor white
-@start
-print "i like suspects"
-goto @start
+bor black
+pen red
+%charVal = 70
+
+@startLoop
+poke 1024, %charVal
+%charVal = %charVal + 1
+if %charVal > 10 then %charVal = 0
+goto @startLoop
 
 
         </textarea>

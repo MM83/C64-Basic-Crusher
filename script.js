@@ -283,12 +283,11 @@ function compile()
     // If any lines start with a label, clear all other tokens from them and mark array as NEW_LINE = true
     if(line[0].type == types.LABEL){
       line = [line[0]];
-      lineObject.newLine = true;
+      lineObject.labelLine = true;
     }
-    // If any lines start with goto, mark array as NEW_LINE = true
-    // if(line[0].value == "goto"){
-    //   lineObject.newLine = true;
-    // }
+    if(line[0].value == "goto"){
+      lineObject.gotoLine = true;
+    }
 
     //SWAP ALL LABELS AND VARS
 
@@ -318,9 +317,6 @@ function compile()
 
   }
 
-  // console.log("LINE TOKENS");
-  // console.log(lineTokens);
-
   //Now, the last thing we do is concatenate lines
 
   function pushAndReset()
@@ -332,23 +328,29 @@ function compile()
   let finalLines = [];
   let labelLineMap = {};
 
-  let lineLength = 20;
+  let lineLength = 76;
 
   let currentFinalLine = "";
 
   for(let i = 0; i < lineTokens.length; ++i)
   {
     let line = lineTokens[i];
-    let newLine = line.newLine;
+    let gotoLine = line.gotoLine;
+    let labelLine = line.labelLine;
     let string = line.string;
 
     // If it's a newline command, it's a label, and can be mapped to the correct position
-    if(newLine)
+    if(labelLine)
     {
-      // pushAndReset();
+      pushAndReset();
       labelLineMap[string] = finalLines.length;
-      // lineTokens.splice(i, 1);
       continue;
+    }
+    if (gotoLine)
+    {
+      //This is a goto line
+      pushAndReset();
+      console.log("GOTO LINE", string);
     }
 
     if(currentFinalLine.length + string.length < lineLength)
@@ -359,18 +361,22 @@ function compile()
       currentFinalLine += string;
     }
 
+    if(gotoLine)
+    {
+      pushAndReset();
+    }
+
   }
 
   //Put any remaining into the final array
   pushAndReset();
 
-  let finalString = "";
+  let finalString = "new\n";
 
   for(let i = 0; i < finalLines.length; ++i)
   {
     let line = finalLines[i];
-    console.log("LINE", line);
-    if(line.charAt(1) == ":")
+    if(line.charAt(0) == ":")
       line = line.substr(1);
 
     for(let j in labelLineMap)
@@ -381,24 +387,17 @@ function compile()
 
     finalLines[i] = line;
 
+    finalString += i + line + "\n";
   }
 
+  finalString += "run\n";
 
-  // for(let i = 0; i < lineTokens.length; ++i)
-
-
-  console.log("fin line map");
-  console.log(finalLines);
-  console.log("labelLineMap");
-  console.log(labelLineMap);
-
-
-
+  outputText.value = finalString;
+  outputText.select();
+  document.execCommand("copy");
 
 
 }
-
-
 
 
 
