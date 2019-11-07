@@ -26,6 +26,11 @@ let keywords = {
   "grey_light" : "15"
 }
 
+function checkAlias(keyword)
+{
+  return keywords[keyword] || keyword;
+}
+
 
 let types = {
   VARIABLE : "VARIABLE",
@@ -74,7 +79,9 @@ function getVarMap(varLabel)
       varCount0 = 0;
       ++varCount1;
     }
-    name += varLabel.charAt(0);
+    let type = varLabel.charAt(0)
+    if(type != "#")
+      name += type;
     varMap[varLabel] = name;
     return name;
   }
@@ -279,22 +286,23 @@ function compile()
       lineObject.newLine = true;
     }
     // If any lines start with goto, mark array as NEW_LINE = true
-    if(line[0].value == "goto"){
-      lineObject.newLine = true;
-    }
+    // if(line[0].value == "goto"){
+    //   lineObject.newLine = true;
+    // }
 
     //SWAP ALL LABELS AND VARS
 
     for(j = 0; j < line.length; ++j)
     {
       let token = line[j];
-      console.log("token", token);
       if(token.type == "VARIABLE")
         token.value = getVarMap(token.value);
       if(token.type == "LABEL")
-        token.value = getVarMap(token.value);
+        token.value = getLabelMap(token.value);
       if(token.type == "STRING")
         token.value = '"' + token.value + '"';
+      if(token.type == "KEYWORD")
+        token.value = checkAlias(token.value);
     }
 
     //Now, condense the tokens into a string
@@ -310,11 +318,81 @@ function compile()
 
   }
 
-  console.log("LINE TOKENS");
-  console.log(lineTokens);
+  // console.log("LINE TOKENS");
+  // console.log(lineTokens);
+
+  //Now, the last thing we do is concatenate lines
+
+  function pushAndReset()
+  {
+    finalLines.push(currentFinalLine);
+    currentFinalLine = "";
+  }
+
+  let finalLines = [];
+  let labelLineMap = {};
+
+  let lineLength = 20;
+
+  let currentFinalLine = "";
+
+  for(let i = 0; i < lineTokens.length; ++i)
+  {
+    let line = lineTokens[i];
+    let newLine = line.newLine;
+    let string = line.string;
+
+    // If it's a newline command, it's a label, and can be mapped to the correct position
+    if(newLine)
+    {
+      // pushAndReset();
+      labelLineMap[string] = finalLines.length;
+      // lineTokens.splice(i, 1);
+      continue;
+    }
+
+    if(currentFinalLine.length + string.length < lineLength)
+    {
+      currentFinalLine += ":" + string;
+    } else {
+      pushAndReset();
+      currentFinalLine += string;
+    }
+
+  }
+
+  //Put any remaining into the final array
+  pushAndReset();
+
+  let finalString = "";
+
+  for(let i = 0; i < finalLines.length; ++i)
+  {
+    let line = finalLines[i];
+    console.log("LINE", line);
+    if(line.charAt(1) == ":")
+      line = line.substr(1);
+
+    for(let j in labelLineMap)
+    {
+      while(line.indexOf(j) != -1)
+        line = line.replace(j, labelLineMap[j]);
+    }
+
+    finalLines[i] = line;
+
+  }
 
 
-  //Swap out any aliases
+  // for(let i = 0; i < lineTokens.length; ++i)
+
+
+  console.log("fin line map");
+  console.log(finalLines);
+  console.log("labelLineMap");
+  console.log(labelLineMap);
+
+
 
 
 
