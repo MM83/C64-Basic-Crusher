@@ -362,16 +362,13 @@ function compile()
       pushAndReset();
       currentFinalLine += string;
     }
-    //
-    // if(gotoLine)
-    // {
-    //   pushAndReset();
-    // }
+
 
   }
 
   //Put any remaining into the final array
   pushAndReset();
+
 
   let finalString = "new\n";
 
@@ -388,6 +385,8 @@ function compile()
     }
 
     finalLines[i] = line;
+    if(line.length == 0)
+      line = "rem";
 
     finalString += i + line + "\n";
   }
