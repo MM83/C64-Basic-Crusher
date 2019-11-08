@@ -6,6 +6,10 @@ let outputText = document.getElementById("output-text");
 let changedText = document.getElementById("changed-text");
 let outputMessage = document.getElementById("output-message");
 
+var editor = CodeMirror.fromTextArea(inputText, {
+    lineNumbers: true
+  });
+
 let keywords = {
   "cls" : "printchr$(147)",
   "bgd" : "poke53281,",
@@ -228,7 +232,8 @@ function swallowToken()
 
 function compile()
 {
-  let inputValue = inputText.value.replace(/[\t*]/g, "");
+  // let inputValue = inputText.value.replace(/[\t*]/g, "");
+  let inputValue = editor.getValue().replace(/[\t*]/g, "");
   let inputLines = inputValue.split("\n");
 
   let lineTokens = [];

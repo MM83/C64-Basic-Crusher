@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>C64 Basic Crusher</title>
+    <link rel="stylesheet" href="codemirror.css">
     <style type="text/css" media="screen">
         body, html {
           position: fixed;
@@ -17,16 +18,17 @@
           font-size: 1.25rem;
         }
         div {
-          display: flex;
           box-sizing: border-box;
         }
         .main-container {
+          display: flex;
           position: fixed;
           width: 100%;
           height: 100%;
           background: black;
         }
         .column {
+          display: flex;
           height: 100%;
           flex-direction: column;
           padding: 0.5rem;
@@ -34,8 +36,10 @@
           flex-basis: 0;
         }
         .input-column {
+          display: flex;
         }
         .output-column {
+          display: flex;
           /* width: 20rem; */
         }
         .input-ta {
@@ -77,7 +81,22 @@
           font-size: 1.5rem;
         }
         .button-row {
+          display: flex;
           margin-top: 0.5rem;
+        }
+        .input-container {
+          background: red;
+          position: relative;
+          flex-grow: 1;
+        }
+        .input-container-inner {
+          position: absolute;
+          width: 100%;
+          height: 100%;
+        }
+        .CodeMirror {
+          border: 1px solid #eee;
+          height: 100%;
         }
 
     </style>
@@ -86,29 +105,11 @@
     <div class="main-container">
       <div class="column input-column">
         <h1>Input</h1>
-        <textarea spellcheck="false" id="input-text" class="input-ta">
-cls
-bgd black
-bor black
-pen red
-%charVal = 70
-%charPos = 1024
-
-
-@startLoop
-poke %charPos, %charVal
-%charPos = %charPos + 1
-if %charPos > 1124 then goto @resetLoop
-goto @startLoop
-
-
-@resetLoop
-%charVal = %charVal + 1
-%charPos = 1024
-goto @startLoop
-
-
-        </textarea>
+        <div class="input-container">
+          <div class="input-container-inner">
+            <textarea spellcheck="false" id="input-text" class="input-ta"></textarea>
+          </div>
+        </div>
         <div class="button-row">
           <button id="compile-button" class="compile-button">Compile</button>
           <button id="load-button" class="load-save-button">Load</button>
@@ -128,8 +129,8 @@ goto @startLoop
         <div class="output-message" id="output-message"></div>
       </div>
     </div>
-    <script type="text/javascript" src="script.js">
-
-    </script>
+    <script type="text/javascript" src="codemirror.js"></script>
+    <script src="vb.js"></script>
+    <script type="text/javascript" src="script.js"></script>
   </body>
 </html>
